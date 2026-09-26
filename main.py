@@ -39,14 +39,39 @@ def delete_student():
 
     roll_no = input("Enter Roll Number of the student to delete: ")
 
-    # search through the list to find a matching student
     for s in students:
         if s["roll_no"] == roll_no:
             students.remove(s)
             print(f"\n✅ Student with Roll No {roll_no} has been deleted.\n")
             return
 
-    # this runs only if no match was found in the loop above
+    print(f"\n⚠️ No student found with Roll No {roll_no}.\n")
+
+
+def update_student():
+    """Update an existing student's name or marks using their roll number"""
+    if len(students) == 0:
+        print("\n⚠️ No students to update.\n")
+        return
+
+    roll_no = input("Enter Roll Number of the student to update: ")
+
+    for s in students:
+        if s["roll_no"] == roll_no:
+            print(f"Current Name: {s['name']}, Current Marks: {s['marks']}")
+
+            # if the person leaves a field blank, we keep the old value
+            new_name = input("Enter new Name (leave blank to keep same): ")
+            new_marks = input("Enter new Marks (leave blank to keep same): ")
+
+            if new_name.strip() != "":
+                s["name"] = new_name
+            if new_marks.strip() != "":
+                s["marks"] = new_marks
+
+            print(f"\n✅ Student with Roll No {roll_no} has been updated.\n")
+            return
+
     print(f"\n⚠️ No student found with Roll No {roll_no}.\n")
 
 
@@ -56,9 +81,10 @@ def main():
         print("1. Add Student")
         print("2. View All Students")
         print("3. Delete Student")
-        print("4. Exit")
+        print("4. Update Student")
+        print("5. Exit")
 
-        choice = input("Enter your choice (1/2/3/4): ")
+        choice = input("Enter your choice (1/2/3/4/5): ")
 
         if choice == "1":
             add_student()
@@ -67,10 +93,12 @@ def main():
         elif choice == "3":
             delete_student()
         elif choice == "4":
+            update_student()
+        elif choice == "5":
             print("Exiting the program. Bye!")
             break
         else:
-            print("\n⚠️ Invalid choice! Please enter 1, 2, 3, or 4.\n")
+            print("\n⚠️ Invalid choice! Please enter 1, 2, 3, 4, or 5.\n")
 
 
 if __name__ == "__main__":
