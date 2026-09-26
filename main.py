@@ -31,26 +31,47 @@ def view_students():
     print("--------------------------\n")
 
 
+def delete_student():
+    """Delete a student using their roll number"""
+    if len(students) == 0:
+        print("\n⚠️ No students to delete.\n")
+        return
+
+    roll_no = input("Enter Roll Number of the student to delete: ")
+
+    # search through the list to find a matching student
+    for s in students:
+        if s["roll_no"] == roll_no:
+            students.remove(s)
+            print(f"\n✅ Student with Roll No {roll_no} has been deleted.\n")
+            return
+
+    # this runs only if no match was found in the loop above
+    print(f"\n⚠️ No student found with Roll No {roll_no}.\n")
+
+
 def main():
     while True:
         print("===== Student Management System =====")
         print("1. Add Student")
         print("2. View All Students")
-        print("3. Exit")
+        print("3. Delete Student")
+        print("4. Exit")
 
-        choice = input("Enter your choice (1/2/3): ")
+        choice = input("Enter your choice (1/2/3/4): ")
 
         if choice == "1":
             add_student()
         elif choice == "2":
             view_students()
         elif choice == "3":
+            delete_student()
+        elif choice == "4":
             print("Exiting the program. Bye!")
             break
         else:
-            print("\n⚠️ Invalid choice! Please enter 1, 2, or 3.\n")
+            print("\n⚠️ Invalid choice! Please enter 1, 2, 3, or 4.\n")
 
 
 if __name__ == "__main__":
     main()
-    
