@@ -60,7 +60,6 @@ def update_student():
         if s["roll_no"] == roll_no:
             print(f"Current Name: {s['name']}, Current Marks: {s['marks']}")
 
-            # if the person leaves a field blank, we keep the old value
             new_name = input("Enter new Name (leave blank to keep same): ")
             new_marks = input("Enter new Marks (leave blank to keep same): ")
 
@@ -75,6 +74,27 @@ def update_student():
     print(f"\n⚠️ No student found with Roll No {roll_no}.\n")
 
 
+def search_student():
+    """Search for a student by roll number or name"""
+    if len(students) == 0:
+        print("\n⚠️ No students to search.\n")
+        return
+
+    keyword = input("Enter Roll Number or Name to search: ")
+    found = False
+
+    for s in students:
+        # checking both roll number and name (case-insensitive for name)
+        if s["roll_no"] == keyword or s["name"].lower() == keyword.lower():
+            print("\n----- Student Found -----")
+            print(f"Roll No: {s['roll_no']} | Name: {s['name']} | Marks: {s['marks']}")
+            print("--------------------------\n")
+            found = True
+
+    if not found:
+        print(f"\n⚠️ No student found matching '{keyword}'.\n")
+
+
 def main():
     while True:
         print("===== Student Management System =====")
@@ -82,9 +102,10 @@ def main():
         print("2. View All Students")
         print("3. Delete Student")
         print("4. Update Student")
-        print("5. Exit")
+        print("5. Search Student")
+        print("6. Exit")
 
-        choice = input("Enter your choice (1/2/3/4/5): ")
+        choice = input("Enter your choice (1/2/3/4/5/6): ")
 
         if choice == "1":
             add_student()
@@ -95,10 +116,12 @@ def main():
         elif choice == "4":
             update_student()
         elif choice == "5":
+            search_student()
+        elif choice == "6":
             print("Exiting the program. Bye!")
             break
         else:
-            print("\n⚠️ Invalid choice! Please enter 1, 2, 3, 4, or 5.\n")
+            print("\n⚠️ Invalid choice! Please enter 1, 2, 3, 4, 5, or 6.\n")
 
 
 if __name__ == "__main__":
