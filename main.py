@@ -1,6 +1,27 @@
 # Student Management System
 
+import json
+
+FILE_NAME = "students.json"  # data will be permanently saved in this file
+
 students = []  # this list stores all student records (list of dictionaries)
+
+
+def load_students():
+    """Load saved students from the file when the program starts"""
+    global students
+    try:
+        with open(FILE_NAME, "r") as file:
+            students = json.load(file)
+    except FileNotFoundError:
+        # this runs the very first time, when the file doesn't exist yet
+        students = []
+
+
+def save_students():
+    """Save the current students list into the file"""
+    with open(FILE_NAME, "w") as file:
+        json.dump(students, file, indent=4)
 
 
 def add_student():
@@ -16,6 +37,7 @@ def add_student():
     }
 
     students.append(student)
+    save_students()  # save to file immediately after adding
     print(f"\n✅ {name} has been added successfully!\n")
 
 
@@ -42,6 +64,7 @@ def delete_student():
     for s in students:
         if s["roll_no"] == roll_no:
             students.remove(s)
+            save_students()  # save to file immediately after deleting
             print(f"\n✅ Student with Roll No {roll_no} has been deleted.\n")
             return
 
@@ -68,6 +91,7 @@ def update_student():
             if new_marks.strip() != "":
                 s["marks"] = new_marks
 
+            save_students()  # save to file immediately after updating
             print(f"\n✅ Student with Roll No {roll_no} has been updated.\n")
             return
 
@@ -84,7 +108,6 @@ def search_student():
     found = False
 
     for s in students:
-        # checking both roll number and name (case-insensitive for name)
         if s["roll_no"] == keyword or s["name"].lower() == keyword.lower():
             print("\n----- Student Found -----")
             print(f"Roll No: {s['roll_no']} | Name: {s['name']} | Marks: {s['marks']}")
@@ -96,6 +119,8 @@ def search_student():
 
 
 def main():
+    load_students()  # load old data (if any) when the program starts
+
     while True:
         print("===== Student Management System =====")
         print("1. Add Student")
