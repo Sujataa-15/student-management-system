@@ -14,7 +14,6 @@ def load_students():
         with open(FILE_NAME, "r") as file:
             students = json.load(file)
     except FileNotFoundError:
-        # this runs the very first time, when the file doesn't exist yet
         students = []
 
 
@@ -24,11 +23,46 @@ def save_students():
         json.dump(students, file, indent=4)
 
 
+def roll_number_exists(roll_no):
+    """Check if a roll number is already used by another student"""
+    for s in students:
+        if s["roll_no"] == roll_no:
+            return True
+    return False
+
+
 def add_student():
-    """Add a new student"""
-    roll_no = input("Enter Roll Number: ")
-    name = input("Enter Name: ")
-    marks = input("Enter Marks: ")
+    """Add a new student, with validation checks"""
+
+    # keep asking until a valid, numeric, non-empty, non-duplicate roll number is given
+    while True:
+        roll_no = input("Enter Roll Number: ").strip()
+        if roll_no == "":
+            print("⚠️ Roll Number cannot be empty. Try again.")
+        elif not roll_no.isdigit():
+            print("⚠️ Roll Number must be a number. Try again.")
+        elif roll_number_exists(roll_no):
+            print(f"⚠️ Roll Number {roll_no} already exists. Try a different one.")
+        else:
+            break
+
+    # keep asking until a valid name (letters and spaces only) is given
+    while True:
+        name = input("Enter Name: ").strip()
+        if name == "":
+            print("⚠️ Name cannot be empty. Try again.")
+        elif not name.replace(" ", "").isalpha():
+            print("⚠️ Name should only contain letters. Try again.")
+        else:
+            break
+
+    # keep asking until marks is a valid number
+    while True:
+        marks = input("Enter Marks: ").strip()
+        if marks.isdigit():
+            break
+        else:
+            print("⚠️ Marks must be a number. Try again.")
 
     student = {
         "roll_no": roll_no,
@@ -37,7 +71,7 @@ def add_student():
     }
 
     students.append(student)
-    save_students()  # save to file immediately after adding
+    save_students()
     print(f"\n✅ {name} has been added successfully!\n")
 
 
@@ -64,7 +98,7 @@ def delete_student():
     for s in students:
         if s["roll_no"] == roll_no:
             students.remove(s)
-            save_students()  # save to file immediately after deleting
+            save_students()
             print(f"\n✅ Student with Roll No {roll_no} has been deleted.\n")
             return
 
@@ -83,15 +117,22 @@ def update_student():
         if s["roll_no"] == roll_no:
             print(f"Current Name: {s['name']}, Current Marks: {s['marks']}")
 
-            new_name = input("Enter new Name (leave blank to keep same): ")
-            new_marks = input("Enter new Marks (leave blank to keep same): ")
+            new_name = input("Enter new Name (leave blank to keep same): ").strip()
 
-            if new_name.strip() != "":
+            # keep asking for marks until it's valid, or left blank
+            while True:
+                new_marks = input("Enter new Marks (leave blank to keep same): ").strip()
+                if new_marks == "" or new_marks.isdigit():
+                    break
+                else:
+                    print("⚠️ Marks must be a number. Try again.")
+
+            if new_name != "":
                 s["name"] = new_name
-            if new_marks.strip() != "":
+            if new_marks != "":
                 s["marks"] = new_marks
 
-            save_students()  # save to file immediately after updating
+            save_students()
             print(f"\n✅ Student with Roll No {roll_no} has been updated.\n")
             return
 
@@ -119,7 +160,7 @@ def search_student():
 
 
 def main():
-    load_students()  # load old data (if any) when the program starts
+    load_students()
 
     while True:
         print("===== Student Management System =====")
